@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Router {
-    public static Map<String, Object> serve(List<Map<String, Object>> routes, String request) {
+    public static Map<String, Object> serve(List<Map<String, Object>> routes, Map<String, String> request) {
+        var path = request.get("path");
+        var method = request.getOrDefault("method", "GET");
         var root = buildPrefixTree(routes);
-        return getHandler(root, request);
+        return getHandler(root, path, method);
     }
 
-    private static Map<String, Object> getHandler(PrefixTreeNode root, String request) {
+    private static Map<String, Object> getHandler(PrefixTreeNode root, String request, String method) {
         var requestArray = request.split("/");
         var node = root;
         for (var requestItem : requestArray) {
@@ -23,7 +25,8 @@ public class Router {
             }
             node = node.children.get(requestItem);
         }
-        return node.handler;
+        System.out.println("RES: " + node.handler);
+        return (Map<String, Object>) node.handler.get(method);
     }
 
     private static PrefixTreeNode buildPrefixTree(List<Map<String, Object>> routes) {
@@ -41,7 +44,7 @@ public class Router {
                     node = node.addNode(routeItem, null);
                 }
             }
-            node.setHandler((Map<String, Object>) routeRule.get("handler"));
+            node.setHandler((String) routeRule.get("method"), (Map<String, Object>) routeRule.get("handler"));
         }
         return root;
     }
@@ -55,6 +58,7 @@ public class Router {
             this.handler = handler;
             this.value = value;
             this.children = new HashMap<>();
+            this.handler = new HashMap<>();
         }
 
         public PrefixTreeNode addNode(String value, Map<String, Object> handler) {
@@ -63,8 +67,9 @@ public class Router {
             return node;
         }
 
-        public void setHandler(Map<String, Object> handler) {
-            this.handler = handler;
+        public void setHandler(String method, Map<String, Object> handler) {
+            System.out.println("NODE: " + this.value + " METHOD: " + method + " HANDLER: " + handler);
+            this.handler.put(method, handler);
         }
     }
 }
