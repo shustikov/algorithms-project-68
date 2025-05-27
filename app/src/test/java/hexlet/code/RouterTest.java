@@ -8,16 +8,21 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RouterTest {
-    private static final List<Map<String, Object>> routes =
-            List.of(
-                    Map.of("path", "/courses", "handler", Map.of("body", "courses")),
-                    Map.of("path", "/courses/basics", "handler", Map.of("body", "basics"))
-            );
+    private static final List<Map<String, Object>> routes = List.of(
+            Map.of(
+                    "path", "/courses/:id",
+                    "handler", Map.of("body", "course!")
+            ),
+            Map.of(
+                    "path", "/courses/:course_id/exercises/:id",
+                    "handler", Map.of("body", "exercise!")
+            )
+    );
 
     @Test
     void serve() {
-        var res = Router.serve(routes, "/courses");
+        var res = Router.serve(routes, "/courses/php_trees");
 
-        assertEquals("courses", res.get("body"));
+        assertEquals("course!", res.get("body"));
     }
 }
