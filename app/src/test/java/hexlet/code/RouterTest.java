@@ -22,7 +22,8 @@ class RouterTest {
             Map.of(
                     "method", "GET",
                     "path", "/courses/:course_id/exercises/:id",
-                    "handler", Map.of("body", "exercise!")
+                    "handler", Map.of("body", "exercise!"),
+                    "constraints", Map.of("id", "\\d+", "course_id", "^[a-z]+$")
             )
     );
 
@@ -31,6 +32,15 @@ class RouterTest {
         var request = Map.of("path", "/courses", "method", "POST");
         var res = Router.serve(routes, request);
 
-        assertEquals("created!", res.get("body"));
+        assertEquals("created!",  ((Map) res.get("handler")).get("body"));
+    }
+
+    @Test
+    void serve_withConstraint() {
+        var request = Map.of("path", "/courses/js/exercises/1", "method", "GET");
+
+        var res = Router.serve(routes, request);
+
+        assertEquals("exercise!", ((Map) res.get("handler")).get("body"));
     }
 }
