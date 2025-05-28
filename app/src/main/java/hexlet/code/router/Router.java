@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 
 public class Router {
-    public static Map<String, String> serve(List<Map<String, Object>> routes, Map<String, String> request) {
+    public static Map<String, Object> serve(List<Map<String, Object>> routes, Map<String, String> request) {
         var path = request.get("path");
         var method = request.getOrDefault("method", "GET");
         var root = buildPrefixTree(routes);
@@ -13,7 +13,7 @@ public class Router {
         result.put("path", path);
         result.put("method", method);
         result.putAll(getHandler(root, path, method));
-        return (Map<String, String>) result.get("handler");
+        return result;
     }
 
     private static Map<String, Object> getHandler(PrefixTreeNode root, String request, String method) {
