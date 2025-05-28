@@ -89,7 +89,7 @@ class RouterTest {
 
     @Test
     void serve_main() {
-        var request = Map.of("path", "users/long/a");
+        var request = Map.of("path", "api/id/names/risc-v");
 
         var res = Router.serve(routesMain, request);
 

@@ -59,7 +59,8 @@ public class Router {
         if (node.constrain == null) {
             return true;
         } else {
-            return Pattern.matches(node.constrain, value);
+            System.out.println(value + " MATCHSES " + node.constrain + " ? - " + Pattern.compile(node.constrain).matcher(value).find());
+            return Pattern.compile(node.constrain).matcher(value).find();
         }
     }
 
