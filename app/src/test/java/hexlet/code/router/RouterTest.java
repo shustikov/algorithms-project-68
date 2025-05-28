@@ -87,10 +87,12 @@ class RouterTest {
         assertEquals("exercise!", ((Map) res.get("handler")).get("body"));
     }
 
-//    @Test
-//    void serve_main() {
-//        var request = Map.of("path", "/courses/js/exercises/1", "method", "GET");
-//
-//        var res = Router.serve(routesMain, request);
-//    }
+    @Test
+    void serve_main() {
+        var request = Map.of("path", "users/long/1", "method", "POST");
+
+        var res = Router.serve(routesMain, request);
+
+        System.out.println(res);
+    }
 }

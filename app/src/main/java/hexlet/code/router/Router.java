@@ -32,10 +32,10 @@ public class Router {
                 var paramsValues = node.children.keySet().stream().filter(ch -> ch.startsWith(":")).toList();
                 var items = paramsValues.stream().map(key -> node.children.get(key))
                         .filter(paramNode -> Pattern.matches(paramNode.constrain == null ? newRequestArray[0] : paramNode.constrain, newRequestArray[0]))
-                        .map(n -> explore(n, newRequestArray, method))
-                        .filter(out -> !out.isEmpty())
-                        .flatMap(Collection::stream)
-                        .map(out -> addParamToMap(out, node.value.replace(":", ""), requestArray[0]))
+                        .map(n -> Map.entry(n, explore(n, newRequestArray, method)))
+                        .filter(out -> !out.getValue().isEmpty())
+                        .flatMap(entry -> entry.getValue().stream().map(out -> Map.entry(entry.getKey(), out)))
+                        .map(mapEntry -> addParamToMap(mapEntry.getValue(), mapEntry.getKey().value.replace(":", ""), newRequestArray[0]))
                         .toList();
                 res.addAll(items);
             }
