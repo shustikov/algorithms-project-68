@@ -31,7 +31,7 @@ public class Router {
             } else {
                 var paramsValues = node.children.keySet().stream().filter(ch -> ch.startsWith(":")).toList();
                 var items = paramsValues.stream().map(key -> node.children.get(key))
-                        .filter(paramNode -> Pattern.matches(paramNode.constrain == null ? newRequestArray[0] : paramNode.constrain, newRequestArray[0]))
+                        .filter(paramNode -> paramMatchesConstrain(paramNode, newRequestArray[0]))
                         .map(n -> Map.entry(n, explore(n, newRequestArray, method)))
                         .filter(out -> !out.getValue().isEmpty())
                         .flatMap(entry -> entry.getValue().stream().map(out -> Map.entry(entry.getKey(), out)))
@@ -55,6 +55,14 @@ public class Router {
         return (HashMap<String, Object>) map;
     }
 
+    private static boolean paramMatchesConstrain(PrefixTreeNode node, String value) {
+        if (node.constrain == null) {
+            return true;
+        } else {
+            return Pattern.matches(node.constrain, value);
+        }
+    }
+
     private static PrefixTreeNode buildPrefixTree(List<Map<String, Object>> routes) {
         var root = new PrefixTreeNode("");
         for (var routeRule : routes) {
@@ -71,7 +79,7 @@ public class Router {
                     node.setConstrain(constrains.getOrDefault(routeItem.replace(":", ""), routeItem));
                 }
             }
-            node.setHandler((String) routeRule.get("method"), (Map<String, Object>) routeRule.getOrDefault("handler", "GET"));
+            node.setHandler((String) routeRule.getOrDefault("method", "GET"), (Map<String, Object>) routeRule.get("handler"));
         }
         return root;
     }
