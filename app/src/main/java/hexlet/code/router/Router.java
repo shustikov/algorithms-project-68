@@ -18,6 +18,10 @@ public class Router {
 
     private static Map<String, Object> getHandler(PrefixTreeNode root, String request, String method) {
         var requestArray = ("/" + request).split("/");
+        var res = explore(root, requestArray, method).getFirst();
+        if (!res.containsKey("params")) {
+            res.put("params", Map.of());
+        }
         return explore(root, requestArray, method).getFirst();
     }
 
@@ -59,7 +63,6 @@ public class Router {
         if (node.constrain == null) {
             return true;
         } else {
-            System.out.println(value + " MATCHSES " + node.constrain + " ? - " + Pattern.compile(node.constrain).matcher(value).find());
             return Pattern.compile(node.constrain).matcher(value).find();
         }
     }
