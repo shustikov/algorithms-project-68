@@ -22,7 +22,7 @@ public class Router {
         if (!res.containsKey("params")) {
             res.put("params", Map.of());
         }
-        return explore(root, requestArray, method).getFirst();
+        return res;
     }
 
     private static List<HashMap<String, Object>> explore(PrefixTreeNode node, String[] requestArray, String method) {
