@@ -1,6 +1,10 @@
 package hexlet.code.router;
 
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 
@@ -38,8 +42,13 @@ public class Router {
                         .filter(paramNode -> paramMatchesConstrain(paramNode, newRequestArray[0]))
                         .map(n -> Map.entry(n, explore(n, newRequestArray, method)))
                         .filter(out -> !out.getValue().isEmpty())
-                        .flatMap(entry -> entry.getValue().stream().map(out -> Map.entry(entry.getKey(), out)))
-                        .map(mapEntry -> addParamToMap(mapEntry.getValue(), mapEntry.getKey().value.replace(":", ""), newRequestArray[0]))
+                        .flatMap(entry -> entry.getValue().stream()
+                                .map(out -> Map.entry(entry.getKey(), out)))
+                        .map(mapEntry -> addParamToMap(
+                                mapEntry.getValue(),
+                                mapEntry.getKey().value.replace(":", ""),
+                                newRequestArray[0])
+                        )
                         .toList();
                 res.addAll(items);
             }
@@ -94,20 +103,20 @@ public class Router {
         private Map<String, Object> handler;
         private String constrain;
 
-        PrefixTreeNode(String value) {
+        PrefixTreeNode(String name) {
             this.children = new HashMap<>();
             this.handler = new HashMap<>();
-            this.value = value;
+            this.value = name;
         }
 
-        public PrefixTreeNode addNode(String value) {
-            var node = new PrefixTreeNode(value);
+        public PrefixTreeNode addNode(String name) {
+            var node = new PrefixTreeNode(name);
             this.children.put(node.value, node);
             return node;
         }
 
-        public void setHandler(String method, Map<String, Object> handler) {
-            this.handler.put(method, handler);
+        public void setHandler(String method, Map<String, Object> methodHandler) {
+            this.handler.put(method, methodHandler);
         }
 
         public void setConstrain(String constrain) {

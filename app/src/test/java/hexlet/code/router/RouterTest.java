@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RouterTest {
-    private static final List<Map<String, Object>> routes = List.of(
+    private static final List<Map<String, Object>> ROUTES = List.of(
             Map.of(
                     "method", "GET",
                     "path", "/courses/:id",
@@ -27,7 +27,7 @@ class RouterTest {
             )
     );
 
-    private static final List<Map<String, Object>> routesMain = List.of(
+    private static final List<Map<String, Object>> ROUTES_MAIN = List.of(
             Map.of(
                     "method", "POST",
                     "path", "users/long/:id",
@@ -73,25 +73,25 @@ class RouterTest {
     @Test
     void serve() {
         var request = Map.of("path", "/courses", "method", "POST");
-        var res = Router.serve(routes, request);
+        var res = Router.serve(ROUTES, request);
 
         assertEquals("created!", ((Map) res.get("handler")).get("body"));
     }
 
     @Test
-    void serve_withConstraint() {
+    void serveWithConstraint() {
         var request = Map.of("path", "/courses/js/exercises/1", "method", "GET");
 
-        var res = Router.serve(routes, request);
+        var res = Router.serve(ROUTES, request);
 
         assertEquals("exercise!", ((Map) res.get("handler")).get("body"));
     }
 
     @Test
-    void serve_main() {
+    void serveMain() {
         var request = Map.of("path", "api/to/Japan/");
 
-        var res = Router.serve(routesMain, request);
+        var res = Router.serve(ROUTES_MAIN, request);
 
         System.out.println(res);
     }
