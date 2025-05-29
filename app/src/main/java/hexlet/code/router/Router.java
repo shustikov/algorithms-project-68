@@ -92,7 +92,10 @@ public class Router {
                     node.setConstrain(constrains.getOrDefault(routeItem.replace(":", ""), routeItem));
                 }
             }
-            node.setHandler((String) routeRule.getOrDefault("method", "GET"), (Map<String, Object>) routeRule.get("handler"));
+            node.setHandler(
+                    (String) routeRule.getOrDefault("method", "GET"),
+                    (Map<String, Object>) routeRule.get("handler")
+            );
         }
         return root;
     }
